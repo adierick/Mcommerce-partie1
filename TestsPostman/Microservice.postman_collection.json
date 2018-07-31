@@ -1,0 +1,77 @@
+{
+	"id": "e56e8d68-e4fe-8ed3-f8cc-8e71ec87d038",
+	"name": "Microservice",
+	"description": "",
+	"order": [
+		"66882b9c-73bf-2f25-fbbb-9b62a5de93f9",
+		"6d2049ab-585b-ddf6-9e01-5c78f8f8ae94"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1533041624745,
+	"owner": "3246020",
+	"public": false,
+	"requests": [
+		{
+			"id": "66882b9c-73bf-2f25-fbbb-9b62a5de93f9",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:9090/Produits/AdminProduits",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1533041825980,
+			"name": "calculerMargeProduits",
+			"description": "",
+			"collectionId": "e56e8d68-e4fe-8ed3-f8cc-8e71ec87d038",
+			"responses": [],
+			"rawModeData": ""
+		},
+		{
+			"id": "6d2049ab-585b-ddf6-9e01-5c78f8f8ae94",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:9090/Produits/AdminProduits/_sort",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "e56e8d68-e4fe-8ed3-f8cc-8e71ec87d038",
+			"data": [],
+			"dataMode": "raw",
+			"name": "trierProduitsParOrdreAlphabetique",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1533041846148,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": ""
+		}
+	]
+}
