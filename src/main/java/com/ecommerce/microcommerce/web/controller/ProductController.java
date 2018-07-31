@@ -1,37 +1,80 @@
 package com.ecommerce.microcommerce.web.controller;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.ecommerce.microcommerce.ProductUtils;
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.validation.Valid;
-import java.net.URI;
-import java.util.List;
 
 
+/**
+ * The Class ProductController.
+ */
 @Api( description="API pour es opérations CRUD sur les produits.")
 
 @RestController
 public class ProductController {
 
+    /** The product dao. */
     @Autowired
     private ProductDao productDao;
 
+	/**
+	 * Calculer marge produit.
+	 *
+	 * @return the list
+	 */
+	@RequestMapping(value = "/Produits/AdminProduits", method = RequestMethod.GET)
+	public Map<String,Integer> calculerMargeProduit() {
+        return productDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(Product::toString, p -> p.getPrix() - p.getPrixAchat()));
+    }
+	
+	/**O
+	 * Trier produits par ordre alphabetique.
+	 *
+	 * @return the list
+	 */
+	@RequestMapping(value = "/Produits/AdminProduits/_sort", method = RequestMethod.GET)
+	public List<Product> trierProduitsParOrdreAlphabetique() {
+		return productDao.findAllByOrderByNomAsc();
+	}
+	
 
+    /**
+     * Liste produits.
+     *
+     * @return the mapping jackson value
+     */
     //Récupérer la liste des produits
-
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-
     public MappingJacksonValue listeProduits() {
 
         Iterable<Product> produits = productDao.findAll();
@@ -48,10 +91,15 @@ public class ProductController {
     }
 
 
+    /**
+     * Afficher un produit.
+     *
+     * @param id the id
+     * @return the product
+     */
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
-
     public Product afficherUnProduit(@PathVariable int id) {
 
         Product produit = productDao.findById(id);
@@ -64,11 +112,17 @@ public class ProductController {
 
 
 
+    /**
+     * Ajouter produit.
+     *
+     * @param product the product
+     * @return the response entity
+     */
     //ajouter un produit
     @PostMapping(value = "/Produits")
-
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
+    	ProductUtils.validProduct(product);
         Product productAdded =  productDao.save(product);
 
         if (productAdded == null)
@@ -83,12 +137,22 @@ public class ProductController {
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * Supprimer produit.
+     *
+     * @param id the id
+     */
     @DeleteMapping (value = "/Produits/{id}")
     public void supprimerProduit(@PathVariable int id) {
 
         productDao.delete(id);
     }
 
+    /**
+     * Update produit.
+     *
+     * @param product the product
+     */
     @PutMapping (value = "/Produits")
     public void updateProduit(@RequestBody Product product) {
 
@@ -96,6 +160,12 @@ public class ProductController {
     }
 
 
+    /**
+     * Teste de requetes.
+     *
+     * @param prix the prix
+     * @return the list
+     */
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
